@@ -3,7 +3,7 @@
     <declare-styleable name="AddImageView">
         <attr name="drag_enable" format="boolean"/>
         <attr name="image_layout_res" format="reference"/>
-        <attr name="add_image_resource" format="reference"/>
+        <attr name="add_image_layout_res" format="reference"/>
         <attr name="image_id" format="reference"/>
         <attr name="close_id" format="reference"/>
         <attr name="span_count" format="integer"/>

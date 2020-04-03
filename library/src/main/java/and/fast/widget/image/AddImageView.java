@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import and.fast.simple.library.R;
+import and.fast.widget.image.utils.GlideImageEngine;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -25,11 +27,11 @@ public class AddImageView extends FrameLayout {
 
     private boolean mDragEnable;
     private int     mMaxNumber, mSpanCount, mItemSpace;
-    private int mImageLayoutRes, mAddImageResource, mImageId, mCloseId;
+    private int mImageLayoutRes, mAddImageLayoutRes, mImageId, mCloseId;
 
     private Adapter            mAdapter;
-    private ImageEngine        mImageEngine;
     private OnAddClickListener mOnAddClickListener;
+    private ImageEngine        mImageEngine = new GlideImageEngine();
 
     public AddImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -40,7 +42,7 @@ public class AddImageView extends FrameLayout {
         // 初始化属性
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.AddImageView);
         mImageLayoutRes = ta.getResourceId(R.styleable.AddImageView_image_layout_res, -1);
-        mAddImageResource = ta.getResourceId(R.styleable.AddImageView_add_image_resource, -1);
+        mAddImageLayoutRes = ta.getResourceId(R.styleable.AddImageView_add_image_layout_res, -1);
         mImageId = ta.getResourceId(R.styleable.AddImageView_image_id, -1);
         mCloseId = ta.getResourceId(R.styleable.AddImageView_close_id, -1);
         mMaxNumber = ta.getInt(R.styleable.AddImageView_max_number, 9);
@@ -51,6 +53,7 @@ public class AddImageView extends FrameLayout {
 
         // 初始化列表
         RecyclerView recyclerView = new RecyclerView(context);
+        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         recyclerView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         addView(recyclerView);
 
@@ -160,58 +163,53 @@ public class AddImageView extends FrameLayout {
     }
 
 
-    private class Adapter extends RecyclerView.Adapter<Adapter.ImageViewHolder> {
+    private class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private List<String> mData = new ArrayList<>();
 
         @NonNull
         @Override
-        public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            if (viewType == 0) {
+                return new AddImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(mAddImageLayoutRes, parent, false));
+            }
+
             return new ImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(mImageLayoutRes, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-            if (!isInEditMode()) {
-                if (mData.size() < mMaxNumber && position == mData.size()) {
-                    holder.mImageView.setImageResource(mAddImageResource);
-                    if (holder.mCloseImageView != null) {
-                        holder.mCloseImageView.setVisibility(GONE);
-                    }
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            if (isInEditMode()) {
+                return;
+            }
 
-                } else {
-                    File file = new File(mData.get(position));
-                    mImageEngine.loadImage(holder.itemView.getContext(), holder.mImageView, file);
+            if (getItemViewType(position) == 0) {
+                holder.itemView.setOnClickListener(v -> mOnAddClickListener.add());
 
-                    if (holder.mCloseImageView != null) {
-                        holder.mCloseImageView.setVisibility(VISIBLE);
-                    }
-                }
+            } else if (getItemViewType(position) == 1) {
+
+                ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
+                File file = new File(mData.get(position));
+                mImageEngine.loadImage(holder.itemView.getContext(), imageViewHolder.mImageView, file);
 
                 // 查看，或添加图片
-                holder.mImageView.setOnClickListener(v -> {
-                    if (mData.size() < mMaxNumber && position == mData.size()) {
-                        mOnAddClickListener.add();
-
-                    } else {
-                        mOnAddClickListener.preview(mData, position);
-                    }
-                });
+                imageViewHolder.mImageView.setOnClickListener(v -> mOnAddClickListener.preview(mData, position));
 
                 // 删除图片
-                if (holder.mCloseImageView != null) {
-                    holder.mCloseImageView.setOnClickListener(v -> {
+                if (imageViewHolder.mCloseImageView != null) {
+                    imageViewHolder.mCloseImageView.setOnClickListener(v -> {
                         mData.remove(position);
                         notifyDataSetChanged();
                         mOnAddClickListener.delete(v);
                     });
                 }
             }
+
         }
 
         @Override
         public int getItemCount() {
-            if (mData == null || mData.isEmpty()) {
+            if (mData.isEmpty()) {
                 return 1;
 
             } else if (mData.size() < mMaxNumber) {
@@ -221,17 +219,26 @@ public class AddImageView extends FrameLayout {
             return mData.size();
         }
 
+        @Override
+        public int getItemViewType(int position) {
+            if (mData.size() < mMaxNumber && position == mData.size()) { // 添加类型
+                return 0;
+            }
+
+            return 1;
+        }
+
         List<String> getData() {
             return mData;
         }
 
         void add(String data) {
-            mData.add(data);
+            mData.add(0, data);
             notifyDataSetChanged();
         }
 
         void addAll(List<String> data) {
-            mData.addAll(data);
+            mData.addAll(0, data);
             notifyDataSetChanged();
         }
 
@@ -248,6 +255,14 @@ public class AddImageView extends FrameLayout {
                 if (mCloseId != -1) {
                     mCloseImageView = itemView.findViewById(mCloseId);
                 }
+            }
+        }
+
+
+        class AddImageViewHolder extends RecyclerView.ViewHolder {
+
+            AddImageViewHolder(@NonNull View itemView) {
+                super(itemView);
             }
         }
 

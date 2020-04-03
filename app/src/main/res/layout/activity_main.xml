@@ -10,11 +10,10 @@
         android:id="@+id/add_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:add_image_resource="@drawable/ic_add_images"
+        app:add_image_layout_res="@layout/recycle_item_add_image"
         app:close_id="@id/tv_close"
         app:image_id="@id/iv_image"
         app:image_layout_res="@layout/recycle_item_image"
-        app:max_number="3"
-        app:span_count="4" />
+        />
 
 </LinearLayout>

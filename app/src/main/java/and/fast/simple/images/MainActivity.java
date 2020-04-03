@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements OnAddClickListene
 
         mAddImageView = findViewById(R.id.add_image_view);
         mAddImageView.setOnAddClickListener(this);
-        mAddImageView.setImageEngine(new GlideImageEngine());
     }
 
     @Override
@@ -35,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements OnAddClickListene
                 .choose(MimeType.ofImage())
                 .countable(true)
                 .maxSelectable(9)
+                .showSingleMediaType(true)
                 .gridExpectedSize(360)
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                 .thumbnailScale(0.85f)
