@@ -56,4 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnAddClickListene
 
     }
 
+    public void onPreview(View view) {
+        startActivity(new Intent(this, PreviewActivity.class));
+    }
 }

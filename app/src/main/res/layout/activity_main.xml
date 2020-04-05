@@ -4,7 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onPreview"
+        android:text="预览" />
 
     <and.fast.widget.image.AddImageView
         android:id="@+id/add_image_view"
@@ -12,8 +19,8 @@
         android:layout_height="wrap_content"
         app:add_image_layout_res="@layout/recycle_item_add_image"
         app:close_id="@id/tv_close"
+        app:drag_enable="true"
         app:image_id="@id/iv_image"
-        app:image_layout_res="@layout/recycle_item_image"
-        />
+        app:image_layout_res="@layout/recycle_item_image" />
 
 </LinearLayout>
