@@ -2,13 +2,14 @@ package and.fast.widget.image;
 
 import android.view.View;
 
+import java.io.File;
 import java.util.List;
 
 public interface OnAddClickListener {
 
     void add();
 
-    default void preview(List<String> data, int position) {
+    default void preview(List<File> path, int position, View view) {
 
     }
 

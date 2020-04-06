@@ -3,6 +3,7 @@ package and.fast.simple.images;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -24,6 +26,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.ImageViewState;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
@@ -34,10 +37,19 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class PreviewActivity extends AppCompatActivity {
+
+    public static void newIntent(List<String> list, View v, int p) {
+        Intent intent = new Intent(v.getContext(), PreviewActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(((Activity) v.getContext()), v, "img");
+        intent.putStringArrayListExtra("model", new ArrayList<>(list));
+        intent.putExtra("p", p);
+        v.getContext().startActivity(intent, options.toBundle());
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,8 +57,20 @@ public class PreviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preview);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(new ImageAdapter());
         new PagerSnapHelper().attachToRecyclerView(recyclerView);
+
+        ArrayList<String> model = getIntent().getStringArrayListExtra("model");
+        //getIntent().getSerializableExtra()
+
+        if (model != null) {
+//            int p = getIntent().getIntExtra("p", 0);
+            recyclerView.setAdapter(new ImageAdapter(model));
+            recyclerView.scrollToPosition(getIntent().getIntExtra("p", 0));
+
+        } else {
+            recyclerView.setAdapter(new ImageAdapter());
+        }
+
     }
 
 
@@ -59,6 +83,13 @@ public class PreviewActivity extends AppCompatActivity {
                 "https://wx2.sinaimg.cn/large/006Bk55sly1g2rlx9wc9gg30a80i8e83.gif"
         ));
 
+        public ImageAdapter() {
+        }
+
+        public ImageAdapter(List<String> data) {
+            this.data = data;
+        }
+
         @NonNull
         @Override
         public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -69,6 +100,9 @@ public class PreviewActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
             final RequestManager requestManager = Glide.with(holder.itemView.getContext());
+
+            // 单击退出
+            // holder.photoView.setOnPhotoTapListener((view, x, y) -> finish());
 
             requestManager
                     .asBitmap()
@@ -105,6 +139,7 @@ public class PreviewActivity extends AppCompatActivity {
                                             }
 
                                         });
+
 
                             } else {
 

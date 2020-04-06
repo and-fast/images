@@ -68,12 +68,27 @@ public class AddImageView extends FrameLayout {
         this.mImageEngine = engine;
     }
 
-    public void add(String data) {
+    public void add(File data) {
         mAdapter.add(data);
     }
 
-    public void addAll(List<String> data) {
-        mAdapter.addAll(data);
+    public void addFile(List<File> files) {
+        mAdapter.addAll(files);
+    }
+
+    public void addPath(List<String> paths){
+        for (String path : paths) {
+            mAdapter.getData().add(0, new File(path));
+        }
+
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+    public List<File> obtainData() {
+        ArrayList<File> files = new ArrayList<>();
+        Collections.copy(files, mAdapter.getData());
+        return files;
     }
 
     public void setOnAddClickListener(OnAddClickListener onAddClickListener) {
@@ -165,7 +180,7 @@ public class AddImageView extends FrameLayout {
 
     private class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private List<String> mData = new ArrayList<>();
+        private List<File> mData = new ArrayList<>();
 
         @NonNull
         @Override
@@ -189,11 +204,10 @@ public class AddImageView extends FrameLayout {
             } else if (getItemViewType(position) == 1) {
 
                 ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
-                File file = new File(mData.get(position));
-                mImageEngine.loadImage(holder.itemView.getContext(), imageViewHolder.mImageView, file);
+                mImageEngine.loadImage(holder.itemView.getContext(), imageViewHolder.mImageView, mData.get(position));
 
                 // 查看，或添加图片
-                imageViewHolder.mImageView.setOnClickListener(v -> mOnAddClickListener.preview(mData, position));
+                imageViewHolder.mImageView.setOnClickListener(v -> mOnAddClickListener.preview(mData, position, v));
 
                 // 删除图片
                 if (imageViewHolder.mCloseImageView != null) {
@@ -228,16 +242,16 @@ public class AddImageView extends FrameLayout {
             return 1;
         }
 
-        List<String> getData() {
+        List<File> getData() {
             return mData;
         }
 
-        void add(String data) {
+        void add(File data) {
             mData.add(0, data);
             notifyDataSetChanged();
         }
 
-        void addAll(List<String> data) {
+        void addAll(List<File> data) {
             mData.addAll(0, data);
             notifyDataSetChanged();
         }

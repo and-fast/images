@@ -6,11 +6,13 @@
     android:orientation="vertical">
 
     <com.github.chrisbanes.photoview.PhotoView
+        android:transitionName="img"
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+        android:transitionName="img"
         android:id="@+id/scale_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
