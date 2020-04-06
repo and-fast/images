@@ -13,13 +13,13 @@
         android:onClick="onPreview"
         android:text="预览" />
 
-    <and.fast.widget.image.AddImageView
+    <and.fast.widget.image.add.AddImageLayout
         android:id="@+id/add_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:add_image_layout_res="@layout/recycle_item_add_image"
         app:close_id="@id/tv_close"
-        app:drag_enable="true"
+        app:drag_enable="false"
         app:image_id="@id/iv_image"
         app:image_layout_res="@layout/recycle_item_image" />
 

@@ -1,11 +1,11 @@
-package and.fast.widget.image;
+package and.fast.widget.image.add;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -17,13 +17,14 @@ import java.util.Collections;
 import java.util.List;
 
 import and.fast.simple.library.R;
-import and.fast.widget.image.utils.GlideImageEngine;
+import and.fast.widget.image.GlideImageEngine;
+import and.fast.widget.image.ImageEngine;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AddImageView extends FrameLayout {
+public class AddImageLayout extends FrameLayout {
 
     private boolean mDragEnable;
     private int     mMaxNumber, mSpanCount, mItemSpace;
@@ -33,22 +34,22 @@ public class AddImageView extends FrameLayout {
     private OnAddClickListener mOnAddClickListener;
     private ImageEngine        mImageEngine = new GlideImageEngine();
 
-    public AddImageView(Context context, AttributeSet attrs) {
+    public AddImageLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AddImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AddImageLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         // 初始化属性
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.AddImageView);
-        mImageLayoutRes = ta.getResourceId(R.styleable.AddImageView_image_layout_res, -1);
-        mAddImageLayoutRes = ta.getResourceId(R.styleable.AddImageView_add_image_layout_res, -1);
-        mImageId = ta.getResourceId(R.styleable.AddImageView_image_id, -1);
-        mCloseId = ta.getResourceId(R.styleable.AddImageView_close_id, -1);
-        mMaxNumber = ta.getInt(R.styleable.AddImageView_max_number, 9);
-        mSpanCount = ta.getInt(R.styleable.AddImageView_span_count, 3);
-        mDragEnable = ta.getBoolean(R.styleable.AddImageView_drag_enable, false);
-        mItemSpace = ta.getDimensionPixelOffset(R.styleable.AddImageView_space, getResources().getDimensionPixelOffset(R.dimen.horizontal_space));
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.AddImageLayout);
+        mImageLayoutRes = ta.getResourceId(R.styleable.AddImageLayout_image_layout_res, -1);
+        mAddImageLayoutRes = ta.getResourceId(R.styleable.AddImageLayout_add_image_layout_res, -1);
+        mImageId = ta.getResourceId(R.styleable.AddImageLayout_image_id, -1);
+        mCloseId = ta.getResourceId(R.styleable.AddImageLayout_close_id, -1);
+        mMaxNumber = ta.getInt(R.styleable.AddImageLayout_max_number, 9);
+        mSpanCount = ta.getInt(R.styleable.AddImageLayout_span_count, 3);
+        mDragEnable = ta.getBoolean(R.styleable.AddImageLayout_drag_enable, false);
+        mItemSpace = ta.getDimensionPixelOffset(R.styleable.AddImageLayout_space, getResources().getDimensionPixelOffset(R.dimen.horizontal_space));
         ta.recycle();
 
         // 初始化列表
@@ -61,7 +62,11 @@ public class AddImageView extends FrameLayout {
         recyclerView.setLayoutManager(new GridLayoutManager(context, mSpanCount));
         recyclerView.addItemDecoration(new ItemDecoration());
         post(() -> recyclerView.setAdapter(mAdapter));
-        new ItemTouchHelper(new ItemTouchCallback()).attachToRecyclerView(recyclerView);
+
+        if (mDragEnable) {
+            recyclerView.addOnItemTouchListener(new OnItemPressListener());
+            new ItemTouchHelper(new ItemTouchCallback()).attachToRecyclerView(recyclerView);
+        }
     }
 
     public void setImageEngine(ImageEngine engine) {
@@ -76,7 +81,7 @@ public class AddImageView extends FrameLayout {
         mAdapter.addAll(files);
     }
 
-    public void addPath(List<String> paths){
+    public void addPath(List<String> paths) {
         for (String path : paths) {
             mAdapter.getData().add(0, new File(path));
         }
@@ -87,12 +92,44 @@ public class AddImageView extends FrameLayout {
 
     public List<File> obtainData() {
         ArrayList<File> files = new ArrayList<>();
-        Collections.copy(files, mAdapter.getData());
+        Collections.copy(mAdapter.getData(), files);
         return files;
     }
 
     public void setOnAddClickListener(OnAddClickListener onAddClickListener) {
         this.mOnAddClickListener = onAddClickListener;
+    }
+
+
+    private class OnItemPressListener implements RecyclerView.OnItemTouchListener {
+
+        @Override
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                View childView = rv.findChildViewUnder(e.getX(), e.getY());
+                if (childView != null) {
+                    List<File> data = mAdapter.getData();
+                    int position = rv.getChildAdapterPosition(childView);
+                    mDragEnable = !(data.size() < mMaxNumber && position == data.size());
+                }
+
+            } else if (e.getAction() == MotionEvent.ACTION_UP || e.getAction() == MotionEvent.ACTION_CANCEL) {
+                mDragEnable = true;
+            }
+
+            return false;
+
+        }
+
+        @Override
+        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        }
     }
 
 
@@ -214,7 +251,7 @@ public class AddImageView extends FrameLayout {
                     imageViewHolder.mCloseImageView.setOnClickListener(v -> {
                         mData.remove(position);
                         notifyDataSetChanged();
-                        mOnAddClickListener.delete(v);
+                        mOnAddClickListener.delete(position, v);
                     });
                 }
             }

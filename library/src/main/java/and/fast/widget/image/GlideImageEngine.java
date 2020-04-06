@@ -1,4 +1,4 @@
-package and.fast.widget.image.utils;
+package and.fast.widget.image;
 
 import android.content.Context;
 import android.net.Uri;

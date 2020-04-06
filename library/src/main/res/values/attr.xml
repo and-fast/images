@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="AddImageView">
+    <declare-styleable name="AddImageLayout">
         <attr name="drag_enable" format="boolean"/>
         <attr name="image_layout_res" format="reference"/>
         <attr name="add_image_layout_res" format="reference"/>

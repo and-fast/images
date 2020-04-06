@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PreviewActivity" />
+        <activity android:name="and.fast.widget.image.preview.PreviewActivity" />
     </application>
 
 </manifest>

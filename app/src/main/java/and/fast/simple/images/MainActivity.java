@@ -11,18 +11,17 @@ import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import and.fast.widget.image.AddImageView;
-import and.fast.widget.image.OnAddClickListener;
-import and.fast.widget.image.utils.GlideImageEngine;
+import and.fast.widget.image.add.AddImageLayout;
+import and.fast.widget.image.add.OnAddClickListener;
+import and.fast.widget.image.preview.PreviewActivity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements OnAddClickListener {
 
-    private AddImageView mAddImageView;
+    private AddImageLayout mAddImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,18 +56,15 @@ public class MainActivity extends AppCompatActivity implements OnAddClickListene
     }
 
     @Override
-    public void delete(View view) {
+    public void delete(int position, View view) {
 
     }
 
     @Override
     public void preview(List<File> data, int position, View view) {
-        StringBuffer sb = new StringBuffer();
-        for (File file : mAddImageView.obtainData()) {
-            sb.append(file.getAbsoluteFile()).append("\n");
-        }
 
-        Toast.makeText(this, sb.toString(), Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(this, data.toString(), Toast.LENGTH_SHORT).show();
     }
 
     public void onPreview(View view) {
