@@ -55,16 +55,12 @@ public class MainActivity extends AppCompatActivity implements OnAddClickListene
         }
     }
 
-    @Override
-    public void delete(int position, View view) {
 
-    }
 
     @Override
     public void preview(List<File> data, int position, View view) {
 
-
-        Toast.makeText(this, data.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, mAddImageView.obtainData().toString(), Toast.LENGTH_SHORT).show();
     }
 
     public void onPreview(View view) {

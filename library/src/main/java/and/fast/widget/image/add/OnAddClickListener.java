@@ -13,6 +13,8 @@ public interface OnAddClickListener {
 
     }
 
-    void delete(int position, View view);
+    default void delete(int position, View view){
+
+    }
 
 }

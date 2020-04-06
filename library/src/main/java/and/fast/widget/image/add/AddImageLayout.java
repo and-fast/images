@@ -91,8 +91,12 @@ public class AddImageLayout extends FrameLayout {
 
 
     public List<File> obtainData() {
+        List<File> original = mAdapter.getData();
         ArrayList<File> files = new ArrayList<>();
-        Collections.copy(mAdapter.getData(), files);
+        for (File file : original) {
+            files.add(new File(file.getAbsolutePath()));
+        }
+
         return files;
     }
 
