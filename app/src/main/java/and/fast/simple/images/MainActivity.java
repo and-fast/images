@@ -55,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements OnAddClickListene
         }
     }
 
-
-
     @Override
     public void preview(List<File> data, int position, View view) {
 

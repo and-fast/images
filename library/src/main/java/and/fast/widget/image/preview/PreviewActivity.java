@@ -142,7 +142,6 @@ public class PreviewActivity extends AppCompatActivity {
                                 holder.photoView.setImageBitmap(bitmap);
                                 holder.photoView.setVisibility(View.VISIBLE);
                                 holder.scaleImageView.setVisibility(View.GONE);
-//                                requestManager.asGif().load(data.get(position)).into(holder.photoView);
                             }
                         }
 
@@ -220,23 +219,6 @@ public class PreviewActivity extends AppCompatActivity {
         }
 
         bitmap.recycle();
-        return scale;
-    }
-
-
-    float getDoubleTapScale(int width, int height, int viewWidth, int viewHeight) {
-        if (viewWidth <= 0 || viewHeight <= 0) {
-            return 1;
-        }
-
-        float sx = viewWidth * 1.f / width;
-        float sy = viewHeight * 1.f / height;
-
-        float scale = Math.max(sx, sy);
-        if (Math.abs(sx - sy) < Float.MIN_NORMAL) {
-            scale = 2 * sx;
-        }
-
         return scale;
     }
 
