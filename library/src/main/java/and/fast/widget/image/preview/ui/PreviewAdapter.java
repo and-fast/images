@@ -1,4 +1,4 @@
-package and.fast.widget.image.preview;
+package and.fast.widget.image.preview.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import and.fast.simple.library.R;
+import and.fast.widget.image.preview.SimpleCustomTarget;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;

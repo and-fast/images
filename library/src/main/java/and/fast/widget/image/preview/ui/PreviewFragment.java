@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import and.fast.simple.library.R;
 import and.fast.widget.image.preview.OnPageChangeCallback;
-import and.fast.widget.image.preview.PreviewAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -66,6 +66,10 @@ public class PreviewFragment extends Fragment {
         public Builder setImages(ArrayList<String> images) {
             this.mImageLinks = images;
             return this;
+        }
+
+        public Builder setImage(String image){
+            return setImages(new ArrayList<>(Collections.singleton(image)));
         }
 
         public Builder setOnPageChangeCallback(@NonNull OnPageChangeCallback callback) {
