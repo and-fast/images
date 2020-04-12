@@ -15,7 +15,6 @@ import java.util.List;
 
 import and.fast.widget.image.add.AddImageLayout;
 import and.fast.widget.image.add.OnAddClickListener;
-import and.fast.widget.image.preview.PreviewActivity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -57,11 +56,11 @@ public class MainActivity extends AppCompatActivity implements OnAddClickListene
 
     @Override
     public void preview(List<File> data, int position, View view) {
-
         Toast.makeText(this, mAddImageView.obtainData().toString(), Toast.LENGTH_SHORT).show();
     }
 
     public void onPreview(View view) {
         startActivity(new Intent(this, PreviewActivity.class));
     }
+
 }
