@@ -1,7 +1,14 @@
 package and.fast.simple.images;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
+import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
+import com.hitomi.tilibrary.transfer.TransferConfig;
+import com.hitomi.tilibrary.transfer.Transferee;
+import com.vansz.glideimageloader.GlideImageLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +32,7 @@ public class PreviewActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
+
 
         TextView tvNumber = findViewById(R.id.tv_number);
         getSupportFragmentManager()
