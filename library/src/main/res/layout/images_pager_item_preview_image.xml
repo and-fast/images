@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<and.fast.widget.image.preview.SlideOutLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
-    android:orientation="vertical">
+    tools:background="#000">
+
+<!--    <androidx.core.widget.ContentLoadingProgressBar-->
+<!--        android:id="@+id/progress_bar"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"/>-->
 
     <com.github.chrisbanes.photoview.PhotoView
-        android:transitionName="img"
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-        android:transitionName="img"
         android:id="@+id/scale_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</and.fast.widget.image.preview.SlideOutLayout>
+
+</FrameLayout>

@@ -1,8 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="and.fast.simple.library" >
 
-    <application>
-        <activity android:name="and.fast.widget.image.preview.PreviewActivity" />
-    </application>
+    <application></application>
 
 </manifest>
