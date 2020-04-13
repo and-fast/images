@@ -2,15 +2,11 @@ package and.fast.simple.images;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
-import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
-import com.hitomi.tilibrary.transfer.TransferConfig;
-import com.hitomi.tilibrary.transfer.Transferee;
-import com.vansz.glideimageloader.GlideImageLoader;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
@@ -22,6 +18,11 @@ import java.util.List;
 
 import and.fast.widget.image.add.AddImageLayout;
 import and.fast.widget.image.add.OnAddClickListener;
+import and.fast.widget.image.preview.loader.GlideImageLoader;
+import and.fast.widget.image.preview.style.index.NumberIndexIndicator;
+import and.fast.widget.image.preview.style.progress.ProgressPieIndicator;
+import and.fast.widget.image.preview.transfer.TransferConfig;
+import and.fast.widget.image.preview.transfer.Transferee;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,16 +65,24 @@ public class MainActivity extends AppCompatActivity implements OnAddClickListene
 
     @Override
     public void preview(List<File> data, int position, View view) {
-        ArrayList<String> urls = new ArrayList<>(Arrays.asList(
-                "https://img3.doubanio.com/view/status/l/public/2927b09da6017a0.webp",
-                "https://ww1.sinaimg.cn/bmiddle/6d33e6faly1gdise58zjbj20xc9mex6p.jpg",
-                "https://gank.io/images/882afc997ad84f8ab2a313f6ce0f3522",
-                "https://wx2.sinaimg.cn/large/006Bk55sly1g2rlx9wc9gg30a80i8e83.gif"
-        ));
+//        ArrayList<String> urls = new ArrayList<>(Arrays.asList(
+//                "https://img3.doubanio.com/view/status/l/public/2927b09da6017a0.webp",
+//                "https://ww1.sinaimg.cn/bmiddle/6d33e6faly1gdise58zjbj20xc9mex6p.jpg",
+//                "https://gank.io/images/882afc997ad84f8ab2a313f6ce0f3522",
+//                "https://wx2.sinaimg.cn/large/006Bk55sly1g2rlx9wc9gg30a80i8e83.gif"
+//        ));
+
+        List<Uri> uris  = new ArrayList<>();
+        for (File datum : data) {
+            uris.add(Uri.fromFile(datum));
+        }
+
+//        Transferee.getDefault(this)
+//                .apply(TransferConfig.build().bindImageView())
 
         Transferee transferee = Transferee.getDefault(this);
         TransferConfig config = TransferConfig.build()
-                .setSourceImageList(urls) // 图片url集合
+                .setSourceUriList(uris) // 图片url集合
 //                .setMissPlaceHolder(R.mipmap.ic_launcher) // 图片加载前的占位图
 //                .setErrorPlaceHolder(R.mipmap.ic_launcher) // 图片加载错误后的占位图
                 .setProgressIndicator(new ProgressPieIndicator()) // 图片加载进度指示器
@@ -96,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnAddClickListene
     }
 
     public void onPreview(View view) {
-        startActivity(new Intent(this, PreviewActivity.class));
+        //startActivity(new Intent(this, PreviewActivity.class));
     }
 
 }
