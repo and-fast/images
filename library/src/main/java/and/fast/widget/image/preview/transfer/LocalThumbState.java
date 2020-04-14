@@ -3,9 +3,7 @@ package and.fast.widget.image.preview.transfer;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.widget.ImageView;
-
 
 import java.io.File;
 import java.util.List;
@@ -32,15 +30,15 @@ class LocalThumbState extends TransferState {
         final TransferConfig config = transfer.getTransConfig();
         ImageLoader imageLoader = config.getImageLoader();
 
-        List<String> sourceImageList = config.getSourceImageList();
-        if (sourceImageList == null || sourceImageList.isEmpty()) {
-            List<Uri> sourceUriList = config.getSourceUriList();
-            imageLoader.showImage(sourceUriList.get(position), transImage, config.getMissDrawable(transfer.getContext()), null);
-
-        } else {
+        List<String> sourceImageList = config.getSourceImageList(); // TODO 修改
+//        if (sourceImageList == null || sourceImageList.isEmpty()) {
+//            List<Uri> sourceUriList = config.getSourceUriList();
+//            imageLoader.showImage(sourceUriList.get(position), transImage, config.getMissDrawable(transfer.getContext()), null);
+//
+//        } else {
             String imgUrl = sourceImageList.get(position);
             imageLoader.showImage(imgUrl, transImage, config.getMissDrawable(transfer.getContext()), null);
-        }
+//        }
     }
 
     @Override
@@ -49,7 +47,7 @@ class LocalThumbState extends TransferState {
 
         TransferImage transImage = createTransferImage(
                 config.getOriginImageList().get(position));
-        transformThumbnail(config.getSourceImageList().get(position), transImage, true);
+        transformThumbnail(config.getSourceImageList().get(position), transImage, true); // TODO
         transfer.addView(transImage, 1);
 
         return transImage;
@@ -59,7 +57,7 @@ class LocalThumbState extends TransferState {
     public void transferLoad(final int position) {
         final TransferConfig config = transfer.getTransConfig();
         final String imgUrl = config.getSourceImageList().get(position);
-        final TransferImage targetImage = transfer.transAdapter.getImageItem(position);
+        final TransferImage targetImage = transfer.transAdapter.getImageItem(position); // TODO
 
         if (config.isJustLoadHitImage()) {
             // 如果用户设置了 JustLoadHitImage 属性，说明在 prepareTransfer 中已经

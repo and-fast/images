@@ -1,10 +1,8 @@
 package and.fast.widget.image.preview.transfer;
 
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.widget.ImageView;
-
 
 import java.io.File;
 import java.util.List;
@@ -63,7 +61,7 @@ class EmptyThumbState extends TransferState {
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, adapter.getParentItem(position));
 
-        // TODO
+        // TODO 修改
         List<String> sourceImageList = config.getSourceImageList();
         if (sourceImageList != null && !sourceImageList.isEmpty()){
             final String imgUrl = sourceImageList.get(position);
@@ -100,43 +98,46 @@ class EmptyThumbState extends TransferState {
                         }
                     });
 
-        } else {
-            Uri uri = config.getSourceUriList().get(position);
-            config.getImageLoader().showImage(uri, targetImage,
-                    placeHolder, new ImageLoader.SourceCallback() {
-
-                        @Override
-                        public void onStart() {
-                            progressIndicator.onStart(position);
-                        }
-
-                        @Override
-                        public void onProgress(int progress) {
-                            progressIndicator.onProgress(position, progress);
-                        }
-
-                        @Override
-                        public void onDelivered(int status, File source) {
-                            progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
-                            switch (status) {
-                                case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
-                                    targetImage.transformIn(TransferImage.STAGE_SCALE);
-                                    //startPreview(targetImage, source, imgUrl, config, position); TODO
-                                    break;
-
-                                case ImageLoader.STATUS_DISPLAY_CANCEL:
-                                    if (targetImage.getDrawable() != null) {
-                                       //startPreview(targetImage, source, imgUrl, config, position); TODO
-                                    }
-                                    break;
-
-                                case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                    targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
-                                    break;
-                            }
-                        }
-                    });
         }
+//        else {
+//            Uri uri = config.getSourceUriList().get(position);
+//            config.getImageLoader().showImage(uri, targetImage,
+//                    placeHolder, new ImageLoader.SourceCallback() {
+//
+//                        @Override
+//                        public void onStart() {
+//                            progressIndicator.onStart(position);
+//                        }
+//
+//                        @Override
+//                        public void onProgress(int progress) {
+//                            progressIndicator.onProgress(position, progress);
+//                        }
+//
+//                        @Override
+//                        public void onDelivered(int status, File source) {
+//                            progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
+//                            switch (status) {
+//                                case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
+//                                    targetImage.transformIn(TransferImage.STAGE_SCALE);
+//                                    // TODO 修改
+//                                    startPreview(targetImage, source, uri, config, position);
+//                                    break;
+//
+//                                case ImageLoader.STATUS_DISPLAY_CANCEL:
+//                                    if (targetImage.getDrawable() != null) {
+//                                        // TODO 修改
+//                                       startPreview(targetImage, source, uri, config, position);
+//                                    }
+//                                    break;
+//
+//                                case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
+//                                    targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
+//                                    break;
+//                            }
+//                        }
+//                    });
+//        }
 
     }
 

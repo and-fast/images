@@ -1,12 +1,10 @@
 package and.fast.widget.image.preview.transfer;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -157,23 +155,23 @@ abstract class TransferState {
         transfer.bindOnOperationListener(targetImage, imgUrl, position);
     }
 
-    // TODO
-    void startPreview(TransferImage targetImage, File source, Uri uri, TransferConfig config, int position) {
-        // 启用 TransferImage 的手势缩放功能
-        targetImage.enable();
-        if (uri.toString().endsWith("gif")) {
-            File cache = source == null ? config.getImageLoader().getCache(uri.toString()) : source;
-            if (cache != null) {
-                try {
-                    targetImage.setImageDrawable(new GifDrawable(cache.getPath()));
-                } catch (IOException ignored) {
-                }
-            }
-        }
-
-        // 绑定点击关闭 Transferee
-        // transfer.bindOnOperationListener(targetImage, imgUrl, position);
-    }
+    // TODO 修改
+//    void startPreview(TransferImage targetImage, File source, Uri uri, TransferConfig config, int position) {
+//        // 启用 TransferImage 的手势缩放功能
+//        targetImage.enable();
+//        if (uri.toString().endsWith("gif")) {
+//            File cache = source == null ? config.getImageLoader().getCache(uri.toString()) : source;
+//            if (cache != null) {
+//                try {
+//                    targetImage.setImageDrawable(new GifDrawable(cache.getPath()));
+//                } catch (IOException ignored) {
+//                }
+//            }
+//        }
+//
+//        // 绑定点击关闭 Transferee
+//        transfer.bindOnOperationListener(targetImage, uri.toString(), position);
+//    }
 
     /**
      * 加载 imageUrl 所关联的图片到 TransferImage 中

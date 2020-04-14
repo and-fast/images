@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -396,9 +396,29 @@ public final class TransferConfig {
         }
 
         public Builder setSourceUriList(List<Uri> sourceUriList) {
-            this.sourceUriList = sourceUriList;
+            List<String> sourceImageList = new ArrayList<>();
+            for (Uri uri : sourceUriList) {
+                sourceImageList.add(uri.toString());
+            }
+
+            this.sourceImageList = sourceImageList;
             return this;
         }
+
+        public Builder setSourceFileList(List<File> sourceFileList) {
+            List<String> sourceImageList = new ArrayList<>();
+            for (File file : sourceFileList) {
+                sourceImageList.add(file.getAbsolutePath());
+            }
+
+            this.sourceImageList = sourceImageList;
+            return this;
+        }
+
+//        public Builder setSourceUriList(List<Uri> sourceUriList) {
+//            this.sourceUriList = sourceUriList;
+//            return this;
+//        }
 
 //        /**
 //         * 缩略图地址集合
@@ -492,19 +512,20 @@ public final class TransferConfig {
             return create();
         }
 
-        // TODO
-        public TransferConfig bindImageView(List<Uri> sourceUriList, ImageView imageView) {
-            this.imageView = imageView;
-            this.sourceUriList = sourceUriList;
-            return create();
+        // TODO 修改
+//        public TransferConfig bindImageView(List<Uri> sourceUriList, ImageView imageView) {
+//            this.imageView = imageView;
+//            this.sourceUriList = sourceUriList;
+//            return create();
+//        }
+
+        // TODO 修改
+        public TransferConfig bindImageView(ImageView imageView, Uri sourceUri) {
+            return bindImageView(imageView, sourceUri.toString());
         }
 
-        // TODO
-        public TransferConfig bindImageView(Uri sourceUri, ImageView imageView) {
-            this.imageView = imageView;
-            this.sourceImageList = new ArrayList<>();
-            sourceUriList.add(sourceUri);
-            return create();
+        public TransferConfig bindImageView(ImageView imageView, File sourceFile) {
+            return bindImageView(imageView, sourceFile.getAbsolutePath());
         }
 
         private TransferConfig create() {

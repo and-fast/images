@@ -5,7 +5,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
-
 import java.io.File;
 import java.util.List;
 
@@ -33,7 +32,7 @@ class RemoteThumbState extends TransferState {
         final TransferConfig config = transfer.getTransConfig();
 
         ImageLoader imageLoader = config.getImageLoader();
-        String imgUrl = config.getThumbnailImageList().get(position);
+        String imgUrl = config.getThumbnailImageList().get(position); // TODO
 
         if (imageLoader.getCache(imgUrl) != null) {
             imageLoader.showImage(imgUrl, transImage,
@@ -92,37 +91,76 @@ class RemoteThumbState extends TransferState {
     private void loadSourceImage(Drawable drawable, final int position, final TransferImage targetImage) {
         final TransferConfig config = transfer.getTransConfig();
         final ImageLoader imageLoader = config.getImageLoader();
-        final String sourceUrl = config.getSourceImageList().get(position);
+
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, transfer.transAdapter.getParentItem(position));
-        imageLoader.showImage(sourceUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
 
-            @Override
-            public void onStart() {
-                progressIndicator.onStart(position);
-            }
+        // TODO 修改
+        List<String> sourceImageList = config.getSourceImageList();
+//        if (!sourceImageList.isEmpty()){
+            final String sourceUrl = sourceImageList.get(position);
+            imageLoader.showImage(sourceUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
 
-            @Override
-            public void onProgress(int progress) {
-                progressIndicator.onProgress(position, progress);
-            }
-
-            @Override
-            public void onDelivered(int status, File source) {
-                progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
-                switch (status) {
-                    case ImageLoader.STATUS_DISPLAY_SUCCESS:
-                        // 启用 TransferImage 的手势缩放功能
-                        targetImage.enable();
-                        // 绑定点击关闭 Transferee
-                        transfer.bindOnOperationListener(targetImage, sourceUrl, position);
-                        break;
-                    case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                        targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
-                        break;
+                @Override
+                public void onStart() {
+                    progressIndicator.onStart(position);
                 }
-            }
-        });
+
+                @Override
+                public void onProgress(int progress) {
+                    progressIndicator.onProgress(position, progress);
+                }
+
+                @Override
+                public void onDelivered(int status, File source) {
+                    progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
+                    switch (status) {
+                        case ImageLoader.STATUS_DISPLAY_SUCCESS:
+                            // 启用 TransferImage 的手势缩放功能
+                            targetImage.enable();
+                            // 绑定点击关闭 Transferee
+                            transfer.bindOnOperationListener(targetImage, sourceUrl, position);
+                            break;
+                        case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
+                            targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
+                            break;
+                    }
+                }
+            });
+//        } else {
+//            List<Uri> sourceUriList = config.getSourceUriList();
+//            final String sourceUri = sourceUriList.get(position).toString();
+//
+//            imageLoader.showImage(sourceUri, targetImage, drawable, new ImageLoader.SourceCallback() {
+//
+//                @Override
+//                public void onStart() {
+//                    progressIndicator.onStart(position);
+//                }
+//
+//                @Override
+//                public void onProgress(int progress) {
+//                    progressIndicator.onProgress(position, progress);
+//                }
+//
+//                @Override
+//                public void onDelivered(int status, File source) {
+//                    progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
+//                    switch (status) {
+//                        case ImageLoader.STATUS_DISPLAY_SUCCESS:
+//                            // 启用 TransferImage 的手势缩放功能
+//                            targetImage.enable();
+//                            // 绑定点击关闭 Transferee
+//                            transfer.bindOnOperationListener(targetImage, sourceUri, position);
+//                            break;
+//                        case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
+//                            targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
+//                            break;
+//                    }
+//                }
+//            });
+//        }
+
     }
 
     @Override

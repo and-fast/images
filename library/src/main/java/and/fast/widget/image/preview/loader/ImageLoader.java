@@ -2,7 +2,6 @@ package and.fast.widget.image.preview.loader;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -43,7 +42,7 @@ public interface ImageLoader {
      */
     void showImage(String imageUrl, ImageView imageView, Drawable placeholder, @Nullable final SourceCallback sourceCallback);
 
-    void showImage(Uri uri, ImageView imageView, Drawable placeholder, @Nullable final SourceCallback sourceCallback);
+    //void showImage(Uri uri, ImageView imageView, Drawable placeholder, @Nullable final SourceCallback sourceCallback);
 
     /**
      * 异步加载图片

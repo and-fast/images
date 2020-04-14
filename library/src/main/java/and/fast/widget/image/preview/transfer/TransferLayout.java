@@ -6,6 +6,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import and.fast.widget.image.preview.style.IIndexIndicator;
@@ -192,10 +194,22 @@ class TransferLayout extends FrameLayout {
             loadedIndexSet.add(left);
         }
 
-        if (right < transConfig.getSourceImageList().size() && !loadedIndexSet.contains(right)) {
-            loadSourceImage(right);
-            loadedIndexSet.add(right);
-        }
+        // TODO 修改
+        List<String> sourceImageList = transConfig.getSourceImageList();
+//        List<Uri> sourceUriList = transConfig.getSourceUriList();
+
+//        if (!sourceImageList.isEmpty()) {
+            if (right < sourceImageList.size() && !loadedIndexSet.contains(right)) {
+                loadSourceImage(right);
+                loadedIndexSet.add(right);
+            }
+
+//        } else if (!sourceUriList.isEmpty()) {
+//            if (right < sourceUriList.size() && !loadedIndexSet.contains(right)) {
+//                loadSourceImage(right);
+//                loadedIndexSet.add(right);
+//            }
+//        }
     }
 
     /**
@@ -221,6 +235,10 @@ class TransferLayout extends FrameLayout {
      * 创建 ViewPager 并添加到 TransferLayout 中
      */
     private void createTransferViewPager() {
+        // TODO 修改
+//        int size = transConfig.getSourceImageList().isEmpty() ? transConfig.getSourceImageList().size()
+//                : transConfig.getSourceUriList().size();
+
         transAdapter = new TransferAdapter(this,
                 transConfig.getSourceImageList().size(),
                 transConfig.getNowThumbnailIndex());
@@ -286,10 +304,18 @@ class TransferLayout extends FrameLayout {
         if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
             transferState = new RemoteThumbState(this);
         } else {
-            String url = transConfig.getSourceImageList().get(position);
+            // TODO 修改
+            String string = "";
+            List<String> sourceImageList = transConfig.getSourceImageList();
+            List<Uri> sourceUriList = transConfig.getSourceUriList();
+            if (!sourceImageList.isEmpty()){
+                string = sourceImageList.get(position);
+            } else {
+                string = sourceUriList.get(position).toString();
+            }
 
             // 即使是网络图片，但是之前已经加载到本地，那么也是本地图片
-            if (transConfig.getImageLoader().getCache(url) != null) {
+            if (transConfig.getImageLoader().getCache(string) != null) {
                 transferState = new LocalThumbState(this);
             } else {
                 transferState = new EmptyThumbState(this);
@@ -410,10 +436,16 @@ class TransferLayout extends FrameLayout {
      * 在 TransferImage 面板中添加下标指示器 UI 组件
      */
     private void addIndexIndicator() {
+        // TODO 修改
         IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
-        if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
-            indexIndicator.attach(this);
-            indexIndicator.onShow(transViewPager);
+        if (indexIndicator != null) {
+            List<String> sourceImageList = transConfig.getSourceImageList();
+            List<Uri> sourceUriList = transConfig.getSourceUriList();
+            if (sourceImageList != null && sourceImageList.size() >= 2
+                    || sourceUriList != null && sourceUriList.size() >= 2) {
+                indexIndicator.attach(this);
+                indexIndicator.onShow(transViewPager);
+            }
         }
     }
 
@@ -421,9 +453,16 @@ class TransferLayout extends FrameLayout {
      * 隐藏下标指示器 UI 组件
      */
     private void hideIndexIndicator() {
+        // TODO 修改
         IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
-        if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
-            indexIndicator.onHide();
+        if (indexIndicator != null) {
+            List<String> sourceImageList = transConfig.getSourceImageList();
+            List<Uri> sourceUriList = transConfig.getSourceUriList();
+
+            if (sourceImageList != null && sourceImageList.size() >= 2
+                    || sourceUriList != null && sourceUriList.size() >= 2) {
+                indexIndicator.onHide();
+            }
         }
     }
 
@@ -438,9 +477,16 @@ class TransferLayout extends FrameLayout {
      * 从 TransferImage 面板中移除下标指示器 UI 组件
      */
     private void removeIndexIndicator() {
+        // TODO 修改
         IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
-        if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
-            indexIndicator.onRemove();
+        if (indexIndicator != null) {
+            List<String> sourceImageList = transConfig.getSourceImageList();
+            List<Uri> sourceUriList = transConfig.getSourceUriList();
+
+            if (sourceImageList != null && sourceImageList.size() >= 2
+                    || sourceUriList != null && sourceUriList.size() >= 2) {
+                indexIndicator.onRemove();
+            }
         }
     }
 

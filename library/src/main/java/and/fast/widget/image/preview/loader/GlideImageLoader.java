@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.widget.ImageView;
 
+import com.blankj.utilcode.util.FileUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
  * 暂不支持百分比进度指示器
  */
 public class GlideImageLoader implements ImageLoader {
-    private Context                     context;
+    private Context context;
     private Map<String, SourceCallback> callbackMap;
 
     private static final String CACHE_DIR = "TransGlide";
@@ -56,7 +56,7 @@ public class GlideImageLoader implements ImageLoader {
             public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
                 if (!imageUrl.endsWith(".gif")) // gif 图片需要 transferee 内部渲染，所以这里不作显示
                     imageView.setImageBitmap(BitmapFactory.decodeFile(resource.getAbsolutePath()));
-                //checkSaveFile(resource, getFileName(imageUrl));
+                checkSaveFile(resource, getFileName(imageUrl));
                 SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null) {
                     callback.onDelivered(STATUS_DISPLAY_SUCCESS, resource);
@@ -64,39 +64,6 @@ public class GlideImageLoader implements ImageLoader {
                 }
                 return false;
             }
-        }).preload();
-    }
-
-    @Override
-    public void showImage(Uri uri, ImageView imageView, Drawable placeholder, @Nullable SourceCallback sourceCallback) {
-        callbackMap.put(uri.toString(), sourceCallback);
-        if (sourceCallback != null) sourceCallback.onStart();
-        // download not support placeholder
-        imageView.setImageDrawable(placeholder);
-        Glide.with(imageView).download(uri).listener(new RequestListener<File>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target, boolean isFirstResource) {
-                SourceCallback callback = callbackMap.get(uri.toString());
-                if (callback != null) callback.onDelivered(STATUS_DISPLAY_FAILED, null);
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
-                if (!uri.toString().endsWith(".gif")) // gif 图片需要 transferee 内部渲染，所以这里不作显示
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(resource.getAbsolutePath()));
-
-                //checkSaveFile(resource, getFileName(imageUrl));
-
-                SourceCallback callback = callbackMap.get(uri.toString());
-                if (callback != null) {
-                    callback.onDelivered(STATUS_DISPLAY_SUCCESS, resource);
-                    callbackMap.remove(uri.toString());
-                }
-
-                return false;
-            }
-
         }).preload();
     }
 
@@ -112,7 +79,7 @@ public class GlideImageLoader implements ImageLoader {
 
             @Override
             public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
-                //checkSaveFile(resource, getFileName(imageUrl));
+                checkSaveFile(resource, getFileName(imageUrl));
                 if (callback != null)
                     callback.onFinish(BitmapFactory.decodeFile(resource.getAbsolutePath()));
                 return false;
@@ -138,7 +105,7 @@ public class GlideImageLoader implements ImageLoader {
             @Override
             public void run() {
                 Glide.get(context).clearDiskCache();
-                //FileUtils.delete(getCacheDir());
+                FileUtils.delete(getCacheDir());
             }
         }).start();
     }
@@ -154,17 +121,17 @@ public class GlideImageLoader implements ImageLoader {
         return nameArray[nameArray.length - 1];
     }
 
-//    private void checkSaveFile(final File file, final String fileName) {
-//        final File cacheDir = getCacheDir();
-//        boolean exists = FileUtils.isFileExists(new File(cacheDir, fileName));
-//        if (!exists) {
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    File targetFile = new File(cacheDir, fileName);
-//                    FileUtils.copy(file, targetFile);
-//                }
-//            }).start();
-//        }
-//    }
+    private void checkSaveFile(final File file, final String fileName) {
+        final File cacheDir = getCacheDir();
+        boolean exists = FileUtils.isFileExists(new File(cacheDir, fileName));
+        if (!exists) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    File targetFile = new File(cacheDir, fileName);
+                    FileUtils.copy(file, targetFile);
+                }
+            }).start();
+        }
+    }
 }
