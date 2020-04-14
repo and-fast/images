@@ -85,10 +85,12 @@ public class Transferee implements DialogInterface.OnShowListener,
     private int getDialogStyle() {
         int dialogStyle;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            dialogStyle = android.R.style.Theme_Translucent_NoTitleBar_Fullscreen;
+            dialogStyle = android.R.style.Theme_Translucent_NoTitleBar;
+//            dialogStyle = android.R.style.Theme_Translucent_NoTitleBar_Fullscreen;
         } else {
             dialogStyle = android.R.style.Theme_Translucent_NoTitleBar;
         }
+
         return dialogStyle;
     }
 
