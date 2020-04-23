@@ -13,6 +13,12 @@
         android:onClick="onPreview"
         android:text="预览" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onAdd"
+        android:text="add" />
+
     <and.fast.widget.image.add.AddImageLayout
         android:id="@+id/add_image_view"
         android:layout_width="match_parent"
@@ -21,6 +27,7 @@
         app:close_id="@id/tv_close"
         app:drag_enable="false"
         app:image_id="@id/iv_image"
-        app:image_layout_res="@layout/recycle_item_image" />
+        app:image_layout_res="@layout/recycle_item_image"
+        app:lazy_initial="true" />
 
 </LinearLayout>

@@ -26,9 +26,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class AddImageLayout extends FrameLayout {
 
-    private boolean mDragEnable;
+    private boolean mDragEnable, mLazyInitial;
     private int     mMaxNumber, mSpanCount, mItemSpace;
     private int mImageLayoutRes, mAddImageLayoutRes, mImageId, mCloseId;
+
+    private RecyclerView mRecyclerView;
 
     private Adapter            mAdapter;
     private OnAddClickListener mOnAddClickListener;
@@ -50,22 +52,29 @@ public class AddImageLayout extends FrameLayout {
         mSpanCount = ta.getInt(R.styleable.AddImageLayout_span_count, 3);
         mDragEnable = ta.getBoolean(R.styleable.AddImageLayout_drag_enable, false);
         mItemSpace = ta.getDimensionPixelOffset(R.styleable.AddImageLayout_space, getResources().getDimensionPixelOffset(R.dimen.horizontal_space));
+        mLazyInitial = ta.getBoolean(R.styleable.AddImageLayout_lazy_initial, false);
         ta.recycle();
 
         // 初始化列表
-        RecyclerView recyclerView = new RecyclerView(context);
-        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        recyclerView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-        addView(recyclerView);
+        if (!mLazyInitial){
+            initRecyclerView();
+        }
+    }
+
+    private void initRecyclerView(){
+        mRecyclerView = new RecyclerView(getContext());
+        mRecyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        mRecyclerView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        addView(mRecyclerView);
 
         mAdapter = new Adapter();
-        recyclerView.setLayoutManager(new GridLayoutManager(context, mSpanCount));
-        recyclerView.addItemDecoration(new ItemDecoration());
-        post(() -> recyclerView.setAdapter(mAdapter));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
+        mRecyclerView.addItemDecoration(new ItemDecoration());
+        post(() -> mRecyclerView.setAdapter(mAdapter));
 
         if (mDragEnable) {
-            recyclerView.addOnItemTouchListener(new OnItemPressListener());
-            new ItemTouchHelper(new ItemTouchCallback()).attachToRecyclerView(recyclerView);
+            mRecyclerView.addOnItemTouchListener(new OnItemPressListener());
+            new ItemTouchHelper(new ItemTouchCallback()).attachToRecyclerView(mRecyclerView);
         }
     }
 
@@ -74,14 +83,26 @@ public class AddImageLayout extends FrameLayout {
     }
 
     public void add(File data) {
+        if (mAdapter == null && mLazyInitial){
+            initRecyclerView();
+        }
+
         mAdapter.add(data);
     }
 
     public void addFile(List<File> files) {
+        if (mAdapter == null && mLazyInitial){
+            initRecyclerView();
+        }
+
         mAdapter.addAll(files);
     }
 
     public void addPath(List<String> paths) {
+        if (mAdapter == null && mLazyInitial){
+            initRecyclerView();
+        }
+
         for (String path : paths) {
             mAdapter.getData().add(0, new File(path));
         }
@@ -276,11 +297,11 @@ public class AddImageLayout extends FrameLayout {
 
         @Override
         public int getItemViewType(int position) {
-            if (mData.size() < mMaxNumber && position == mData.size()) { // 添加类型
-                return 0;
+            if (mData.size() < mMaxNumber && position == mData.size()) {
+                return 0; // 添加类型
             }
 
-            return 1;
+            return 1; // 图片类型
         }
 
         List<File> getData() {
