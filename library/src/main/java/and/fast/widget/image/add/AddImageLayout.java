@@ -112,6 +112,10 @@ public class AddImageLayout extends FrameLayout {
 
 
     public List<File> obtainData() {
+        if (mAdapter == null){
+            return new ArrayList<>();
+        }
+
         List<File> original = mAdapter.getData();
         ArrayList<File> files = new ArrayList<>();
         for (File file : original) {
